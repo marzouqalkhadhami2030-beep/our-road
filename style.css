@@ -1,0 +1,37 @@
+/* ======== essential responsive base (اضف هذا مرة واحدة فقط) ======== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; padding: 0; }
+
+:root {
+  --max-width: 1100px;
+  --pad: 1rem;
+  --radius: 8px;
+  font-size: clamp(14px, 1.8vw, 18px);
+}
+
+/* تحسين عرض الخطوص على الهواتف */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, Tahoma;
+  color: #222;
+  background: #fafafa;
+  line-height: 1.6;
+}
+
+/* وسائط ووسائط مرنة */
+img, video { max-width: 100%; height: auto; display: block; }
+
+/* عناصر تفاعلية تتبع الخط العام */
+button, input, select, textarea { font: inherit; }
+
+/* متغيرات التصميم السريعة (أضف فقط إن لم تكن موجودة في CSS عندك) */
+.wrap { max-width: var(--max-width); margin: 0 auto; padding: calc(var(--pad) * 1.25); }
+.card { background: #fff; border-radius: var(--radius); padding: calc(var(--pad) * 0.9); box-shadow: 0 6px 18px rgba(18,24,28,0.06); margin-bottom: 1rem; }
+.grid-2 { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 800px) { .grid-2 { grid-template-columns: 1fr 360px; } }
+.btn { display:inline-block; padding:0.6rem 1rem; border-radius:6px; border:none; cursor:pointer; background:#0b74de; color:#fff; text-decoration:none; text-align:center; }
+footer.site-footer { text-align:center; padding:calc(var(--pad) * 0.9); font-size:0.95rem; color:#666; }
