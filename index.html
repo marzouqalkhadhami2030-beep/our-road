@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="css/styles.css">
+
+
+<title>مبادرة شق طريق دياح - عرض التبرعات</title>
+<!-- أيقونة -->
+<link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+<link rel="apple-touch-icon" href="images/logo.png">
+
+<style>
+body{font-family:Tahoma,Arial;margin:0;background:#f5f7fb;direction:rtl;}
+main{flex: 10;}
+
+header{background:#004aad;color:#fff;padding:10px;text-align:center;position:"sticky";top:0;z-index:20;}
+iconBtnHeader{
+  background:transparent; border:1px solid rgba(255,255,255,0.15); color:#fff; padding:8px 10px; border-radius:8px;
+  cursor:pointer; font-weight:700;
+}
+
+/* logo centered, raised top */
+.header-logo {
+  display:flex; flex-direction:column; align-items:center; margin-top:6px;
+}
+.header-logo img { max-height:92px; width:auto; display:block; margin:0 auto; }
+.header-location { font-size:13px; margin-bottom: 8px; opacity:0.95;margin-top: -5px;color:hwb(59 59% 9%); }
+.tabs {margin:0px 0;text-align:center; margin-top: -20px;}
+.tabs button{margin:2px;padding:6px 10px;border-radius:8px;border:none;background:#fff;color:#004aad;cursor:pointer;font-weight:bold;font-size:13px;}
+#searchBox{margin:6px auto;padding:6px;width:90%;max-width:500px;border-radius:6px;border:1px solid #ccc;display:block;text-align:center;font-size:13px;}
+.shareBtns{display:flex;gap:8px;align-items:center}
+.iconBtn{padding:8px 10px;border-radius:8px;border:0;background:#004aad; color: rgb(6, 202, 71);cursor:pointer;font-weight:600;}
+table{width:100%;border-collapse:collapse;margin:6px 0;background:#fff;table-layout:fixed;word-wrap:break-word; font-weight: bold;}
+th,td{padding:10px 8px;border:1px solid #e2e8f0;text-align:center;font-size:13px;}
+th{background:#004aad;color:#fff;cursor:pointer;position:sticky;top:0;z-index:5;}
+.success{color:green;font-weight:700;}
+.danger{color:red;font-weight:700;}
+tr:hover{background:#f1f1f1;}
+#totals{margin:6px 0;font-weight:bold;font-size:14px;text-align:center;}
+
+.message {
+  text-align: center;
+
+  color: #004aad;
+  padding: 10px;
+  margin-bottom: 12px; /* يبعدها عن الفوتر */
+  border-radius: 6px;
+  font-size: small;
+ font-style: bold;
+}
+
+
+
+:root{
+  --accent: #004aad;
+  --beige: #f5deb3;
+  --header-z: 1200;
+  --gap: 8px;
+}
+*{box-sizing:border-box}
+.tabBtn.active{ background:var(--beige); color:#000; }
+
+/* dropdown menus */
+.dropdown{position:relative;display:inline-block}
+.dropdown .menu{
+  display:none;position:absolute;top:44px;right:0;background:#ffffff;border:1px solid #ddd;border-radius:8px;min-width:200px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);z-index:1200;padding:6px 0;
+}
+.dropdown.open .menu{display:block}
+.dropdown .menu button{display:block;width:100%;padding:10px;border:0;background:transparent;text-align:right;cursor:pointer;font-size:14px}
+
+
+/* modal */
+#donorModal{ display:none; position:fixed; inset:0; z-index:16000; align-items:center; justify-content:center; background: rgba(0,0,0,0.35); }
+#donorModal .box{ background:#fff; padding:16px; border-radius:8px; max-width:440px; width:96%; box-shadow:0 10px 36px rgba(0,0,0,0.25); text-align:right; }
+#donorModal .box .controls{ display:flex; gap:8px; justify-content:flex-end; margin-top:12px; flex-wrap:wrap; }
+#donorModal .btn{ padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:800; }
+#donorModal .btn-primary{ background:var(--accent); color:#fff; }
+#donorModal .btn-muted{ background:#f0f0f0; color:#000; }
+
+  /* mobile card view (default on small screens) */
+  .cardList{display:none;padding:8px;max-width:1200px;margin:0 auto}
+  .card{background:#fff;border:1px solid #e8eef8;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
+  .card .num{flex:0 0 64px;font-weight:900;text-align:center}
+  .card .data{flex:1;text-align:right}
+  .card .data .line1{font-weight:700;display:flex;justify-content:flex-start;gap:8px;align-items:center;direction:rtl}
+  .card .data .line2{display:flex;justify-content:flex-start;gap:8px;align-items:center;direction:rtl;font-size:14px}
+
+
+  #toggleViewBtn {
+  background:#004aad;
+  color:#fff;
+  font-weight:bold;
+  margin:8px auto;
+  display:block;
+}
+
+
+  /* footer */
+  footer.siteFooter{background:var(--accent);color:#fff;padding:12px 8px;text-align:center;margin-top:16px; position:static;}
+
+  /* print */
+  @media print{
+    header#mainHeader, .tabsWrap{position:static}
+    footer.siteFooter{display:none}
+    th{position:static}
+  }
+
+  /* responsive */
+  @media (max-width:720px){
+    .tabsWrap{top:calc(92px + 12px)}
+    table{display:none}
+    .cardList{display:block}
+  }
+
+
+
+  /* ===== زر تبديل العرض (Toggle View) ===== */
+#toggleViewBtn{
+  display:none;               /* ظاهر فقط على شاشات صغيرة بواسطة الميديا كويري أسفله */
+  background:#004aad;
+  color:#fff;
+  font-weight:700;
+  padding:8px 12px;
+  border-radius:8px;
+  border:0;
+  cursor:pointer;
+  margin:8px auto;
+  width:calc(90% - 16px);
+  max-width:360px;
+  text-align:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* زر مرئي على شاشات صغيرة فقط */
+@media (max-width:720px){
+  #toggleViewBtn{ display:block; }
+}
+
+/* عندما يفرض المستخدم عرض الديسك-توب من الموبايل نلغي قواعد الـ media query 
+body.force-desktop table#donationsTable,
+body.force-desktop table#donationsTable thead,
+body.force-desktop table#donationsTable tbody {
+  display: scroll !important;
+}
+body.force-desktop table#donationsTable { width:100% !important; }
+
+body.force-desktop .cardList,
+body.force-desktop .cardList * {
+  display: none !important;
+}
+*/
+
+
+/* لمسة صغيرة: تغيّر نص الزر عند التشغيل */
+#toggleViewBtn[aria-pressed="true"]{ background:#0b5ed7; }
+
+</style>
+</head>
+<body>
+
+<header id="mainHeader">
+ <div style="padding-bottom: 25px; padding-top:-30px; text-align:right;"><span>⭐</span><strong id="topDonorName">—</strong> — <span id="topDonorAmount">0</span>
+ <button class="iconBtn" onclick="printPDF()">⬇PDF</button></div>
+
+
+
+  <div class="header-top">  <div class="header-logo" aria-hidden="false" style="margin-top:-30px;  padding-bottom: 20px;">
+    <img src="images/logo.png" alt="شعار مبادرة شق طريق دياح">
+    <b><div class="header-location">ريمة _ الجببن _ خضم</div></b>
+    
+  </div>
+   
+
+   
+  </div>
+  
+
+  <!-- Tabs / dropdowns -->
+  <div class="tabs" id="tabsWrap">
+    <button class="tabBtn" data-key="YER" onclick="filterByCurrency('YER', this)">💰 ر.يمني</button>
+    <button class="tabBtn" data-key="SAR" onclick="filterByCurrency('SAR', this)">💰 ر.سعودي</button>
+    <button class="tabBtn" data-key="USD" onclick="filterByCurrency('USD', this)">💰 الدولار💲</button>
+    <button class="tabBtn" data-key="days" onclick="filterByCurrency('days', this)">👷 أيادي عاملة</button>
+
+    <div class="dropdown" id="paidDropdown">
+      <button class="tabBtn" onclick="toggleDropdown('paidDropdown')">✅ الوصولات▾</button>
+      <div class="menu" role="menu">
+        <button onclick="filterPaid('YER')">الواصلة بالريال اليمني</button>
+        <button onclick="filterPaid('SAR')">الواصلة بالريال السعودي</button>
+        <button onclick="filterPaid('USD')">الواصلة بالدولار الامريكي</button>
+        <button onclick="filterPaid('tools')">الواصلة (ادوات العمل)</button>
+        <button onclick="filterPaid('days')">الواصلة (الايادي العاملة)</button>
+        <button onclick="filterPaid('hours')">ساعات عمل البكلين المنفذة</button>
+      </div>
+    </div>
+
+    <div class="dropdown" id="remainingDropdown">
+      <button class="tabBtn" onclick="toggleDropdown('remainingDropdown')">⏳ المتبقيات ▾</button>
+      <div class="menu" role="menu">
+        <button onclick="filterRemaining('YER')">المتبقيات بالريال اليمني</button>
+        <button onclick="filterRemaining('SAR')">المتبقيات بالريال السعودي</button>
+        <button onclick="filterRemaining('USD')">المتبقيات بالدولار</button>
+        <button onclick="filterRemaining('tools')">المتبقيات (أدوات)</button>
+        <button onclick="filterRemaining('days')">المتبقيات (أيام)</button>
+        <button onclick="filterRemaining('hours')">المتبقيات (ساعات)</button>
+      </div>
+    </div>
+
+    <button class="tabBtn" data-key="tools" onclick="filterByCurrency('tools', this)">🧰 الأدوات</button>
+    <button class="tabBtn" data-key="hours" onclick="filterByCurrency('hours', this)">⏱️ ساعات</button>
+
+    <div style="min-width:220px" id="totals">
+      <div id="totalsNum">الإجمالي بالأرقام: 0</div>
+      <div id="totalsWords">الإجمالي بالحروف: صفر</div>
+    </div>
+
+    <input id="searchBox" placeholder="🔎 ابحث باسم المتبرع أو المبلغ أو الرقم..." oninput="searchDonations()" />
+  </div>
+<!-- زر تبديل العرض - الصق بعد مربع البحث -->
+<button id="toggleViewBtn" aria-pressed="false" title="تبديل عرض الجدول / البطاقات">عرض الجدول</button>
+
+</header>
+
+<main class="tableWrap" id="contentMain">
+  <!-- Table for desktop -->
+  <div style="overflow:auto">
+    <table id="donationsTable" role="table" aria-label="قائمة التبرعات">
+      <thead>
+        <tr>
+          <th style="width:60px">#</th>
+          <th>اسم المتبرع</th>
+          <th id="colTotal">المبلغ / الكمية</th>
+          <th>المدفوع</th>
+          <th>المتبقي</th>
+          <th>نوع التبرع</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Card list for mobile (two-column style: رقم + بيانات) -->
+  <div class="cardList" id="cardList" aria-hidden="true"></div>
+
+<div class="cardList" id="cardList" aria-hidden="false"></div>
+
+  <!-- mobile cards -->
+  <div class="cardList" id="cardList" aria-hidden="true" ></div>
+  <div class="message" >
+    <b>برمجة وتصميم : م/ مرزوق الخضمي<br><br>
+    جميع الحقوق محفوظة © مبادرة شق طريق دياح 2025م</b>
+      <div id="headerDate" style="text-align:center; font-size:14px; padding-top:5px; padding-bottom: 5px;">جارٍ التحميل...</div>
+  </div>
+
+</main>
+
+<!-- modal for donor confirmation -->
+<div id="donorModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:16000;align-items:center;justify-content:center">
+  <div style="background:#fff;padding:14px;border-radius:8px;max-width:420px;width:92%;text-align:right">
+    <div id="donorModalText" style="font-weight:800;margin-bottom:8px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button style="background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:0" id="donorSendBtn">نعم — أرسل واتساب</button>
+      <button style="background:#eee;padding:8px 12px;border-radius:8px;border:0" id="donorNoBtn">لا — اغلاق</button>
+    </div>
+  </div>
+</div>
+
+
+
+<footer class="siteFooter" style="position: relative; bottom: 0; left: 0; width: 100%;">
+  <div style="max-width:1200px;margin:0 auto;color:#fff;font-weight:700">
+    حسابتنا على مواقع التواصل الاجتماعي
+  </div>
+</footer>
+
+<script>
+/* ====== ضع رابط الويب آب هنا (Web App /exec) ====== */
+const API = "https://script.google.com/macros/s/AKfycbz2oXNjeBNRJJD5KmWXyFpsBg2La_o9D4wdXKMSChUUKZS3GEGjx0Le534cFI-bGFgA/exec"; // <-- غيّر هنا برابطك النهائي
+
+/* ====== بيانات وحالة ====== */
+let allDonations = [];
+let currentRendered = [];
+let currentFilter = {mode:'currency', key:'YER'};
+const dropdowns = ['paidDropdown','remainingDropdown'];
+
+/* ====== التاريخ والوقت ====== */
+function updateDateTime(){
+  const dt = new Date();
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const day = days[dt.getDay()];
+  const isoDate = dt.toLocaleDateString('en-CA'); // YYYY-MM-DD
+  const time = dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('headerDate').innerText = `${isoDate} — ${time} — ${day}`;
+}
+updateDateTime(); setInterval(updateDateTime,60*1000);
+
+/* ====== تحويل أرقام إلى كلمات عربية (لا تبدأ بـ "و") ====== */
+function numberToArabicWords(n){
+  n = Number(n);
+  if (!isFinite(n)) return "";
+  if (n === 0) return "صفر";
+  const ones = ["","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة"];
+  const teens = ["عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
+  const tens = ["","عشرة","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
+  const hundreds = ["","مائة","مئتان","ثلاثمائة","أربعمائة","خمسمائة","ستمائة","سبعمائة","ثمانمائة","تسعمائة"];
+  function tripletToWords(num){
+    let words=[]; let h=Math.floor(num/100); let rem=num%100;
+    if(h) words.push(hundreds[h]);
+    if(rem>=10 && rem<20) words.push(teens[rem-10]);
+    else{ let t=Math.floor(rem/10); let o=rem%10; if(o) words.push(ones[o]); if(t) words.push(tens[t]); }
+    return words.join(" و");
+  }
+  function scaleName(idx,val){
+    if(idx===1) return (val===1?"ألف":val===2?"ألفان":val<=10?"آلاف":"ألف");
+    if(idx===2) return (val===1?"مليون":val===2?"مليونان":val<=10?"ملايين":"مليون");
+    return "";
+  }
+  let parts=[], rem=n, idx=0;
+  while(rem>0){
+    const tri = rem % 1000;
+    if(tri){
+      let triWords = tripletToWords(tri);
+      if(idx===0) parts.unshift(triWords);
+      else {
+        const scale = scaleName(idx, tri);
+        if(tri===1||tri===2) parts.unshift(scale);
+        else parts.unshift(triWords + " " + scale);
+      }
+    }
+    rem = Math.floor(rem/1000); idx++;
+  }
+  return parts.join(" و").replace(/^و\s*/,"");
+}
+
+/* ====== utils ====== */
+function escapeHtml(s){ if(s==null||s==undefined) return ""; return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function fallbackLabel(k){
+  if(!k)return""; k=String(k).toLowerCase();
+  if(k==='yer') return 'ريال يمني'; if(k==='sar') return 'ريال سعودي'; if(k==='usd') return 'دولار أمريكي';
+  if(k==='tools') return 'أداة'; if(k==='days') return 'يوم'; if(k==='hours') return 'ساعة';
+  return k;
+}
+
+/* ====== تحميل البيانات من Web App ====== */
+async function loadData(){
+  try{
+    const url = API + "?action=list";
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    allDonations = await res.json();
+    computeTopDonor();
+    // افتراضي عرض YER
+    filterByCurrency('YER', document.querySelector('.tabBtn[data-key="YER"]'));
+    recalcLayout();
+  }catch(err){
+    console.error("خطأ في loadData:", err);
+  }
+}
+
+/* ====== حساب أكبر متبرع ====== */
+function computeTopDonor(){
+  if(!Array.isArray(allDonations) || allDonations.length===0){
+    document.getElementById('topDonorName').innerText='—'; document.getElementById('topDonorAmount').innerText='0'; return;
+  }
+  let max=-Infinity, chosen=null;
+  for(const r of allDonations){
+    const v = Number(r.total) || 0;
+    if(v > max){ max = v; chosen = r; }
+  }
+  if(chosen){ document.getElementById('topDonorName').innerText=escapeHtml(chosen.name||'—'); document.getElementById('topDonorAmount').innerText=Number(chosen.total)||0; }
+}
+
+/* ====== فلترة حسب العملة (أزرار) ====== */
+function filterByCurrency(key, btn){
+  dropdowns.forEach(d=>document.getElementById(d).classList.remove('open'));
+  currentFilter = {mode:'currency', key:key};
+  document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active'); else { const b=document.querySelector(`.tabBtn[data-key="${key}"]`); if(b) b.classList.add('active'); }
+  const items = allDonations.filter(d => String(d.currency||'').toLowerCase() === String(key||'').toLowerCase());
+  render(items, 'total');
+}
+
+/* ====== paid/remaining filters (from dropdown) ====== */
+function filterPaid(key){
+  dropdowns.forEach(d=>document.getElementById(d).classList.remove('open'));
+  currentFilter = {mode:'paid', key:key};
+  document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('paidDropdown').querySelector('.tabBtn')?.classList.add('active');
+  let items;
+  if(key==='ALL') items = allDonations.filter(d => Number(d.paid) > 0);
+  else items = allDonations.filter(d => String(d.currency||'').toLowerCase() === String(key).toLowerCase() && Number(d.paid) > 0);
+  render(items, 'paid');
+}
+function filterRemaining(key){
+  dropdowns.forEach(d=>document.getElementById(d).classList.remove('open'));
+  currentFilter = {mode:'remaining', key:key};
+  document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('remainingDropdown').querySelector('.tabBtn')?.classList.add('active');
+  let items;
+  if(key==='ALL') items = allDonations.filter(d => (Number(d.total)||0) - (Number(d.paid)||0) > 0);
+  else items = allDonations.filter(d => String(d.currency||'').toLowerCase() === String(key).toLowerCase() && ((Number(d.total)||0) - (Number(d.paid)||0)) > 0);
+  render(items, 'remaining');
+}
+function toggleDropdown(id){ dropdowns.forEach(d=>{ if(d!==id) document.getElementById(d).classList.remove('open'); }); document.getElementById(id).classList.toggle('open'); }
+
+/* ====== Render table (desktop) and cards (mobile) ====== */
+function render(items, aggregateMode){
+  currentRendered = items || [];
+  // desktop table
+  const tbody = document.querySelector('#donationsTable tbody');
+  tbody.innerHTML = '';
+  let totalSum=0, paidSum=0, remainingSum=0;
+  items.forEach((d, idx)=>{
+    const name=escapeHtml(d.name);
+    const total=Number(d.total)||0; const paid=Number(d.paid)||0; const remaining=total-paid;
+    const type=escapeHtml(d.type || fallbackLabel(d.currency));
+    const status = remaining===0 ? '✅' : (paid===0 ? '❌' : '≠');
+    totalSum += total; paidSum += paid; remainingSum += remaining;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${idx+1}</td>
+      <td style="text-align:right">${name}</td>
+      <td>${total}</td>
+      <td>${paid}</td>
+      <td class="${remaining===0?'success':'danger'}">${remaining}</td>
+      <td>${type}</td>
+      <td>${status}</td>`;
+    // attach phone and row index for modal and like
+    tr.dataset.phone = d.phone || '';
+    tr.dataset.rowIndex = d._row || (d.row || (idx+2)); // prefer server _row
+    tr.addEventListener('click', ()=> showDonorModal(d.phone, d.name));
+    tbody.appendChild(tr);
+  });
+
+  // mobile cards
+  const cardList = document.getElementById('cardList');
+  cardList.innerHTML = '';
+  items.forEach((d, idx)=>{
+    const name = escapeHtml(d.name);
+    const total=Number(d.total)||0; const paid=Number(d.paid)||0; const remaining=total-paid;
+    const status = remaining===0 ? '✅' : (paid===0 ? '❌' : '≠');
+    const rowIndex = d._row || (d.row || (idx+2));
+    const unit = d.type && d.type.includes(':') ? d.type.split(':')[1] : (d.type || fallbackLabel(d.currency));
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="num">${idx+1}</div>
+      <div class="data">
+        <div class="line1">${total}: ${name} <span style="margin-left:8px">${status}</span></div>
+        <div class="line2">${paid} : المدفوع  <span style="margin-right:12px;color:red">${remaining} : المتبقي</span> 
+           <span style="margin-right:12px;color:">${escapeHtml(unit)} :النوع </span></div>
+      </div>
+    `;
+
+    // click on whole card -> show modal ask to send whatsapp
+    card.addEventListener('click', ()=> showDonorModal(d.phone, d.name));
+    cardList.appendChild(card);
+  });
+
+  // compute totals to display in header (respecting aggregateMode)
+  let showNumber=0; let unitWord='';
+  if(aggregateMode==='paid'){ showNumber = paidSum; unitWord = deduceUnit(items); }
+  else if(aggregateMode==='remaining'){ showNumber = remainingSum; unitWord = deduceUnit(items); }
+  else { showNumber = totalSum; unitWord = deduceUnit(items); }
+  const words = numberToArabicWords(showNumber);
+  document.getElementById('totalsNum').innerText = `الإجمالي:(${showNumber}) ${unitWord}`;
+  document.getElementById('totalsWords').innerText = showNumber===0 ? `صفر ${unitWord}` : ` (${words}) ${unitWord}`;
+}
+
+/* deduce unit */
+function deduceUnit(items){
+  if(!items||items.length===0) return '';
+  const first = items[0];
+  let unit = (first.type && first.type.includes(':')) ? first.type.split(':')[1] : (first.type || fallbackLabel(first.currency));
+  return unit || fallbackLabel(first.currency);
+}
+
+/* search */
+function searchDonations(){
+  const q = document.getElementById('searchBox').value.trim().toLowerCase();
+  document.querySelectorAll('#donationsTable tbody tr').forEach(r => {
+    r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('.cardList .card').forEach(c => {
+    c.style.display = c.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+/* ====== modal for sending whatsapp ====== */
+const donorModalEl = document.getElementById('donorModal');
+const donorText = document.getElementById('donorModalText');
+const donorSendBtn = document.getElementById('donorSendBtn');
+const donorNoBtn = document.getElementById('donorNoBtn');
+let donorPending = {phone:'', name:''};
+
+function showDonorModal(phone, name){
+  donorPending = {phone: String(phone||''), name: String(name||'')};
+  donorText.innerText = `هل تريد إرسال رسالة شكر للمتبرع ${donorPending.name} عبر واتساب؟`;
+  donorModalEl.style.display = 'flex';
+}
+donorNoBtn.addEventListener('click', ()=> donorModalEl.style.display='none');
+donorSendBtn.addEventListener('click', ()=>{
+  const raw = donorPending.phone || '';
+  const cleaned = normalizePhoneForWa(raw);
+  if(!cleaned){ alert('رقم المتبرع غير متاح أو غير مفهوم. تأكد من وجود حقل phone في Google Sheet.'); return; }
+  const pageUrl = location.href;
+  const message = `شكراً لك من القلب يا ${donorPending.name}\n${pageUrl}`;
+  const encoded = encodeURIComponent(message);
+  const waUrl = `https://wa.me/${cleaned}?text=${encoded}`;
+  window.open(waUrl, '_blank');
+  donorModalEl.style.display = 'none';
+});
+
+/* phone normalization */
+const DEFAULT_COUNTRY_CODE = "967"; // عدّل حسب بلدك الأساسي
+function normalizePhoneForWa(raw){
+  if(!raw) return "";
+  let s = String(raw).trim();
+  const arabicNums = '٠١٢٣٤٥٦٧٨٩';
+  for(let i=0;i<10;i++) s = s.replace(new RegExp(arabicNums[i],'g'), String(i));
+  s = s.replace(/[\s\-\.\(\)\/\\]/g,'');
+  if(s.startsWith('+')) s = s.slice(1);
+  if(s.startsWith('00')) s = s.slice(2);
+  s = s.replace(/[^\d]/g,'');
+  if(s.startsWith('0')) { s = s.replace(/^0+/, ''); s = DEFAULT_COUNTRY_CODE + s; return s; }
+  if(s.length <= 8) { s = DEFAULT_COUNTRY_CODE + s; return s; }
+  return s;
+}
+
+
+
+/* ====== print / share PDF (simple) ====== */
+function printPDF(){
+  // Try Web Share API (some Android browsers) — fallback to print()
+  if (navigator.canShare) {
+    // For now we fallback to window.print because generating bank-like PDF needs server-side or html2pdf
+    window.print();
+  } else {
+    window.print();
+  }
+}
+
+/* ====== sorting helpers (desktop) ====== */
+let lastSorted = {by:null, asc:true};
+function sortByRemaining(){
+  const tbody = document.querySelector('#donationsTable tbody');
+  let rows = Array.from(tbody.querySelectorAll('tr')).filter(r=>r.style.display!=='none');
+  if(lastSorted.by==='remaining') lastSorted.asc=!lastSorted.asc; else { lastSorted.by='remaining'; lastSorted.asc=true; }
+  rows.sort((a,b)=>{ const va=Number(a.children[4].innerText)||0, vb=Number(b.children[4].innerText)||0; return lastSorted.asc ? va-vb : vb-va; });
+  tbody.innerHTML=''; rows.forEach(r=>tbody.appendChild(r));
+}
+function sortByStatus(){
+  const order={'❌':1,'≠':2,'✅':3};
+  const tbody = document.querySelector('#donationsTable tbody');
+  let rows = Array.from(tbody.querySelectorAll('tr')).filter(r=>r.style.display!=='none');
+  if(lastSorted.by==='status') lastSorted.asc=!lastSorted.asc; else { lastSorted.by='status'; lastSorted.asc=true; }
+  rows.sort((a,b)=>{ const sa=a.children[6].innerText.trim(), sb=b.children[6].innerText.trim(); return lastSorted.asc ? (order[sa]-order[sb]) : (order[sb]-order[sa]); });
+  tbody.innerHTML=''; rows.forEach(r=>tbody.appendChild(r));
+}
+
+/* ====== layout recalc to avoid header covering rows and position sticky th correctly ====== */
+function recalcLayout(){
+  const header = document.getElementById('mainHeader');
+  const tabs = document.getElementById('tabsWrap');
+  const footer = document.querySelector('footer.siteFooter');
+  const headerH = header ? header.offsetHeight : 60;
+  const tabsH = tabs ? tabs.offsetHeight : 50;
+  const top = headerH + tabsH; // total top offset for <th>
+  document.documentElement.style.setProperty('--th-top', top + 'px');
+  // padding bottom so footer not cover last rows (desktop)
+  const content = document.getElementById('contentMain');
+  const footerH = footer ? footer.offsetHeight : 80;
+  if(content) content.style.paddingBottom = (footerH + 12) + 'px';
+}
+
+/* ====== close dropdowns if click outside ====== */
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.dropdown')) dropdowns.forEach(d=>document.getElementById(d).classList.remove('open'));
+});
+
+/* ====== on load ====== */
+window.addEventListener('load', ()=>{
+  recalcLayout();
+  loadData();
+  setTimeout(recalcLayout,400);
+});
+window.addEventListener('resize', recalcLayout);
+
+
+  // اضف مرة واحدة قبل </body>
+  function setVh() {
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  }
+  setVh();
+  window.addEventListener('resize', setVh);
+
+
+
+  /* ====== Toggle view (mobile <-> desktop table) ====== */
+(function(){
+  const btn = document.getElementById('toggleViewBtn');
+  if(!btn) return; // لو ما كان الزر موجود لا نفعل شيء
+
+  // يجلب كل الجداول والـ card lists الموجودة (يتعامل مع تكرار عناصر)
+  const tables = Array.from(document.querySelectorAll('table#donationsTable'));
+  const cardLists = Array.from(document.querySelectorAll('.cardList'));
+
+  function applyView(mode){
+    if(mode === 'desktop'){
+      // force desktop view even على شاشات صغيرة
+      document.body.classList.add('force-desktop');
+      tables.forEach(t => t.style.display = 'table');
+      cardLists.forEach(c => c.style.display = 'none');
+      btn.setAttribute('aria-pressed','true');
+      btn.innerText = 'تغيير عرض جدولي   ';
+      localStorage.setItem('donationView','desktop');
+    } else {
+      // mobile (cards)
+      document.body.classList.remove('force-desktop');
+      // نترك قواعد CSS الأصلية تعمل (media query) — لكن نضمن عرض الكروت
+      tables.forEach(t => {
+        // hide table on small screens; if screen wide, keep default
+        if(window.innerWidth <= 720) t.style.display = 'none';
+        else t.style.display = 'table';
+      });
+      cardLists.forEach(c => {
+        if(window.innerWidth <= 720) c.style.display = 'block';
+        else c.style.display = 'none';
+      });
+      btn.setAttribute('aria-pressed','false');
+      btn.innerText = 'العرض الرئيسي';
+      localStorage.setItem('donationView','mobile');
+    }
+  }
+
+  // toggle handler
+  btn.addEventListener('click', (e) => {
+    const pressed = btn.getAttribute('aria-pressed') === 'true';
+    applyView(pressed ? 'mobile' : 'desktop');
+  });
+
+  // on load apply preference or default (mobile default on small screens)
+  function initToggle(){
+    const pref = localStorage.getItem('donationView');
+    if(pref === 'desktop'){
+      applyView('desktop');
+    } else if(pref === 'mobile'){
+      applyView('mobile');
+    } else {
+      // no pref: default behavior: if small screen -> mobile cards, else desktop table
+      if(window.innerWidth <= 720) applyView('mobile'); else applyView('desktop');
+    }
+  }
+
+  // when screen resizes, if user hasn't forced desktop, respect responsive default
+  window.addEventListener('resize', () => {
+    const pref = localStorage.getItem('donationView');
+    if(pref !== 'desktop'){ // only auto-update when user didn't force desktop
+      if(window.innerWidth <= 720){
+        applyView('mobile');
+      } else {
+        applyView('desktop');
+      }
+    } else {
+      // if forced desktop, keep it
+      applyView('desktop');
+    }
+  });
+
+  // init after small delay to ensure DOM content rendered
+  window.setTimeout(initToggle, 120);
+
+})();
+
+
+</script>
+
+
+
+
+<!-- Footer ثابت أسفل الصفحة -->
+<!-- رابط مكتبة Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<footer style="position: 'sticky'; bottom: 0; left: 0; width: 100%; background: #fff; text-align: center; padding: 10px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.1);">
+  
+  <!-- واتساب -->
+  <a href="https://wa.me/+966508365384" target="_blank" style="margin:0 15px; font-size: 30px; color:#25D366;">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  <!-- فيسبوك -->
+  <a href="https://www.facebook.com/username" target="_blank" style="margin:0 15px; font-size: 30px; color:#1877F2;">
+    <i class="fab fa-facebook"></i>
+  </a>
+  <!-- إنستجرام -->
+  <a href="https://www.instagram.com/username" target="_blank" style="margin:0 15px; font-size: 30px; color:#E1306C;">
+    <i class="fab fa-instagram"></i>
+  </a>
+    <!-- تيك توك -->
+  <a href="https://www.tiktok.com/@username" target="_blank" style="margin:0 10px; font-size: 30px; color:#000000;">
+    <i class="fab fa-tiktok"></i>
+  </a>
+
+  <!-- سناب شات -->
+  <a href="https://www.snapchat.com/add/username" target="_blank" style="margin:0 15px; font-size: 30px; color:#FFFC00;">
+    <i class="fab fa-snapchat"></i>
+  </a>
+
+  <!-- الموقع -->
+  <a href="https://www.yoursite.com" target="_blank" style="margin:0 15px; font-size: 30px; color:#000000;">
+    <i class="fas fa-globe"></i>
+  </a>
+</footer>
+</body>
+</html>
+
